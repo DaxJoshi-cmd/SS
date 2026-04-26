@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sage Spark | Curated Knowledge. Sparked Minds.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #A41C30;
+            --accent: #C9A84C;
+            --dark: #1c1a18;
+            --bg: #faf9f7;
+            --white: #ffffff;
+            --gray-light: #f0eeeb;
+            --gray-med: #888;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Badge Colors */
+            --b-article: #3b82f6;
+            --b-working: #8b5cf6;
+            --b-case: #f59e0b;
+            --b-teaching: #ef4444;
+            --b-free: #10b981;
+            --b-reg: #eab308;
+            --b-ext: #6b7280;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .brand-font { font-family: 'Playfair Display', serif; font-weight: 700; }
+        .ui-font { font-family: 'Source Sans 3', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; }
+
+        /* Utility */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        .flex { display: flex; align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .hidden { display: none !important; }
+
+        /* Header */
+        header {
+            background: var(--white);
+            height: 70px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark);
+            margin: 0 15px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .nav-link:hover { color: var(--primary); }
+
+        .search-bar-mini {
+            background: var(--gray-light);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: 'Source Sans 3', sans-serif;
+            width: 200px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #1c1a18 0%, #3d0a12 100%);
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+        }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+        /* Breadcrumb */
+        .breadcrumb { padding: 20px 0; font-family: 'Source Sans 3', sans-serif; color: var(--gray-med); font-size: 0.9rem; }
+
+        /* Tabs */
+        .scope-tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 30px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+        .tab-btn.active { border-bottom-color: var(--primary); color: var(--primary); }
+
+        /* Main Search Area */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 50px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-input-main {
+            flex-grow: 1;
+            padding: 15px 25px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: 'EB Garamond', serif;
+        }
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 30px;
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .search-btn:hover { background: #801525; }
+
+        /* Main Content Layout */
+        .main-layout { display: grid; grid-template-columns: 280px 1fr; gap: 40px; align-items: start; }
+
+        /* Sidebar Filters */
+        .sidebar { position: sticky; top: 90px; }
+        .filter-group { border-bottom: 1px solid var(--gray-light); padding-bottom: 15px; margin-bottom: 15px; }
+        .filter-header { 
+            display: flex; justify-content: space-between; cursor: pointer; padding: 5px 0; 
+            font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+        }
+        .filter-content { padding: 10px 0; }
+        .filter-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 0.95rem; cursor: pointer; }
+        .filter-item input { margin-right: 10px; accent-color: var(--primary); }
+        .count { color: var(--gray-med); font-size: 0.8rem; margin-left: auto; }
+
+        /* Chips */
+        .active-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .chip {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Toolbar */
+        .toolbar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--white); padding: 15px 20px; border-radius: 8px; margin-bottom: 25px;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+
+        /* Publication Cards */
+        .results-grid { display: flex; flex-direction: column; gap: 25px; }
+        .results-grid.grid-mode { display: grid; grid-template-columns: 1fr 1fr; }
+
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            border-left: 4px solid transparent;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+        }
+        .card:hover { border-left-color: var(--primary); transform: translateX(5px); }
+
+        .meta-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .badge { 
+            padding: 3px 10px; border-radius: 4px; color: white; font-size: 0.7rem; 
+            font-family: 'Source Sans 3', sans-serif; text-transform: uppercase;
+        }
+        .card-title { font-size: 1.6rem; color: var(--dark); cursor: pointer; margin-bottom: 10px; }
+        .card-title:hover { color: var(--primary); }
+        
+        .source-line { font-style: italic; color: var(--gray-med); margin-bottom: 15px; }
+        .abstract { font-size: 1.05rem; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .abstract.expanded { -webkit-line-clamp: unset; }
+        
+        .read-more-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; }
+
+        .keyword-pill {
+            display: inline-block;
+            background: var(--gray-light);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+
+        .citation-box {
+            border-left: 3px solid var(--accent);
+            padding: 10px 15px;
+            background: #fffdf9;
+            font-style: italic;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .action-row { display: flex; gap: 15px; margin-top: 20px; }
+        .abtn {
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .abtn-primary { background: var(--primary); color: white; }
+        .abtn-secondary { border-color: var(--primary); color: var(--primary); background: transparent; }
+        .abtn:hover { opacity: 0.9; }
+
+        .bookmark-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: var(--gray-med);
+        }
+        .bookmark-btn.active { color: var(--primary); }
+
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 50px; padding-bottom: 50px; }
+        .page-num {
+            width: 40px; height: 40px; border-radius: 4px; border: 1px solid var(--gray-light);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+        .page-num.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: var(--transition);
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: var(--white); width: 90%; max-width: 900px; max-height: 90vh;
+            border-radius: 12px; overflow: hidden; transform: scale(0.9); transition: var(--transition);
+            display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-header { background: linear-gradient(to right, #1c1a18, #4a0e16); color: white; padding: 30px; position: relative; }
+        .modal-body { padding: 40px; overflow-y: auto; }
+        .close-modal { position: absolute; top: 20px; right: 20px; color: white; cursor: pointer; font-size: 1.5rem; }
+
+        /* Footer */
+        footer { background: var(--dark); color: white; padding: 80px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        .footer-bottom { border-top: 1px solid #333; padding-top: 20px; text-align: center; font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; color: var(--gray-med); }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .results-grid.grid-mode { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container flex justify-between h-100" style="height: 100%;">
+            <div class="flex">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="var(--primary)" style="margin-right: 10px;">
+                    <path d="M12 2C12 2 7 7 7 12C7 14.7614 9.23858 17 12 17C14.7614 17 17 14.7614 17 12C17 7 12 2 12 2ZM12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15Z"/>
+                    <path d="M12 19C10.3431 19 9 20.3431 9 22H15C15 20.3431 13.6569 19 12 19Z"/>
+                </svg>
+                <span class="brand-font" style="font-size: 1.5rem; color: var(--primary);">Sage Spark</span>
+            </div>
+            <nav class="flex">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Publications</a>
+                <a href="#" class="nav-link">Topics</a>
+                <a href="#" class="nav-link">About</a>
+                <input type="text" placeholder="Search..." class="search-bar-mini" id="headerSearch">
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Sage Spark Publications</h1>
+            <p>Curated articles, insights, and knowledge sourced from LinkedIn and beyond.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="breadcrumb">Home > Publications > Articles</div>
+
+        <div class="scope-tabs">
+            <button class="tab-btn" data-scope="all">All Sage Spark</button>
+            <button class="tab-btn active" data-scope="featured">Featured Articles</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input-main" id="mainSearch" placeholder="Search articles and insights...">
+            <button class="search-btn">Search</button>
+        </div>
+
+        <div class="main-layout">
+            <aside class="sidebar" id="filtersContainer">
+                </aside>
+
+            <main>
+                <div id="activeChips" class="active-chips"></div>
+
+                <div class="toolbar">
+                    <div id="resultCount">Filter Results: <b>0</b></div>
+                    <div class="flex" style="gap: 15px;">
+                        <select id="sortOrder" style="padding: 5px; border-radius: 4px;">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="az">A-Z Title</option>
+                            <option value="relevance">Relevance</option>
+                        </select>
+                        <div class="flex" style="border: 1px solid var(--gray-light); border-radius: 4px; overflow: hidden;">
+                            <button id="listViewBtn" class="tab-btn active" style="padding: 5px 12px; border: none;">List</button>
+                            <button id="gridViewBtn" class="tab-btn" style="padding: 5px 12px; border: none;">Grid</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resultsArea" class="results-grid">
+                    </div>
+
+                <div id="pagination" class="pagination"></div>
+            </main>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h2 class="brand-font" style="font-size: 2rem; margin-bottom: 10px;">Sage Spark</h2>
+                    <p style="opacity: 0.7;">Curated Knowledge. Sparked Minds.</p>
+                </div>
+                <div>
+                    <h3 class="ui-font" style="color: var(--accent); margin-bottom: 20px;">Quick Links</h3>
+                    <p>Home</p><p>Publications</p><p>Archives</p>
+                </div>
+                <div>
+                    <h3 class="ui-font" style="color: var(--accent); margin-bottom: 20px;">Topics</h3>
+                    <p>Technology</p><p>Personal Development</p><p>Business</p>
+                </div>
+                <div>
+                    <h3 class="ui-font" style="color: var(--accent); margin-bottom: 20px;">About</h3>
+                    <p>Our Mission</p><p>Team</p><p>Contact</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Sage Spark. All rights reserved.</p>
+                <p>Designed by Shivanshi Jesadiya, Dax Joshi & Pryanshi Bhatt</p>
+                <p>UpSkill Newsletter Vol. 26, No. 2</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" id="closeModal">&times;</span>
+                <div id="modalMeta" class="ui-font" style="color: var(--accent); margin-bottom: 10px;"></div>
+                <h2 id="modalTitle" style="font-size: 2rem;"></h2>
+                <div id="modalSub" style="opacity: 0.8; font-style: italic; margin-top: 10px;"></div>
+            </div>
+            <div class="modal-body">
+                <div id="modalAbstract" style="font-size: 1.2rem; margin-bottom: 30px;"></div>
+                <div id="modalKeywords" style="margin-bottom: 30px;"></div>
+                <div id="modalCitation" class="citation-box"></div>
+                <div id="modalActions" class="action-row"></div>
+                <hr style="margin: 40px 0; border: none; border-top: 1px solid var(--gray-light);">
+                <h3 class="brand-font">Related Insights</h3>
+                <div id="modalRelated" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const seedArticles = [
+            {
+                id: 'growth-mindset',
+                featured: true,
+                title: 'Growth Mindset: Developing Intelligence Through Effort and Persistence',
+                url: 'https://www.linkedin.com/pulse/demystifying-machine-learning-art-sorting-jumbled-cupboard-shah-g2p1f',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Article',
+                year: 2025,
+                access: 'Free to Read',
+                topic: 'Personal Development',
+                keywords: ['Growth Mindset', 'Learning', 'Student Development', 'Motivation', 'Persistence'],
+                volume: '26',
+                issue: '2',
+                citation: '"Growth Mindset." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: 'A growth mindset is the belief that intelligence and abilities can be developed through effort, learning, and persistence. Students with this mindset are more likely to accept challenges, learn from mistakes, and stay motivated. This article explores practical strategies for cultivating a growth mindset in academic and professional settings.',
+                status: 'published',
+                createdAt: '2025-01-01T10:00:00Z'
+            },
+            {
+                id: 'preventive-healthcare-awareness',
+                featured: false,
+                title: 'Preventive Healthcare Awareness: Habits That Keep You Healthy',
+                url: 'https://www.linkedin.com/posts/dr-prerana-navti-kamat-phd-a28b921a3_disclaimer-preventivemedicine-publichealth-activity-7429902135988830208-GS4I',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Article',
+                year: 2025,
+                access: 'Free to Read',
+                topic: 'Health & Medicine',
+                keywords: ['Preventive Healthcare', 'Nutrition', 'Exercise', 'Routine Check-ups', 'Wellness'],
+                volume: '26',
+                issue: '2',
+                citation: '"Preventive Healthcare Awareness." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: 'Preventive healthcare awareness emphasizes the importance of maintaining good health by adopting healthy habits such as proper nutrition, regular exercise, and routine check-ups. This article discusses how individuals can proactively reduce the risk of chronic illness.',
+                status: 'published',
+                createdAt: '2025-01-02T10:00:00Z'
+            },
+            {
+                id: 'machines-learn-classify-data',
+                featured: true,
+                title: 'How Machines Learn to Classify Data: Patterns, Algorithms, and AI',
+                url: 'https://www.linkedin.com/posts/jinalishahsoftwareengineer1_how-do-machines-learn-to-sort-the-world-ugcPost-7435540745501134849-RKWn/',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Working Paper',
+                year: 2025,
+                access: 'Free to Read',
+                topic: 'Technology & AI',
+                keywords: ['Machine Learning', 'Data Classification', 'Algorithms', 'Artificial Intelligence', 'Spam Detection'],
+                volume: '26',
+                issue: '2',
+                citation: '"How Machines Learn to Classify Data." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: 'Machines learn to classify data by identifying patterns in large sets of information. Using algorithms, they are trained on labeled data to recognize differences and similarities between categories. This paper examines supervised learning techniques.',
+                status: 'published',
+                createdAt: '2025-01-03T10:00:00Z'
+            },
+            {
+                id: 'build-in-public',
+                featured: false,
+                title: 'Build in Public: Sharing Your Work, Progress and Learning Journey Openly',
+                url: 'https://www.linkedin.com/posts/shruti-sonali_37151-people-saw-me-say-i-built-my-entire-share-7438474037778878464-S9Yr/',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Article',
+                year: 2025,
+                access: 'Free to Read',
+                topic: 'Business Strategy',
+                keywords: ['Build in Public', 'Transparency', 'Entrepreneurship', 'Personal Branding', 'Community Learning'],
+                volume: '26',
+                issue: '2',
+                citation: '"Build in Public." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: '"Build in public" is an approach where individuals openly share their work, progress, and learning journey with others. This article explores why transparency creates community trust and accelerates feedback.',
+                status: 'published',
+                createdAt: '2025-01-04T10:00:00Z'
+            },
+            {
+                id: 'openai-strategic-shift',
+                featured: true,
+                title: "OpenAI's Strategic Shift: Innovation, Safety, and Accessibility in the AI Era",
+                url: 'https://www.linkedin.com/posts/vaibhavsisinty_openai-just-did-the-one-thing-sam-altman-activity-7435198438746718208-3Txt',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Case Study',
+                year: 2025,
+                access: 'Register to Read',
+                topic: 'Technology & AI',
+                keywords: ['OpenAI', 'AI Strategy', 'Innovation', 'Safety', 'Organizational Change', 'Accessibility'],
+                volume: '26',
+                issue: '2',
+                citation: '"OpenAI\'s Strategic Shift." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: "OpenAI's strategic shift reflects how organizations adapt to rapid technological changes. This case analyzes the pivotal decisions that redefined OpenAI's mission from a nonprofit to a capped-profit company.",
+                status: 'published',
+                createdAt: '2025-01-05T10:00:00Z'
+            },
+            {
+                id: 'sachin-tendulkar-legend',
+                featured: true,
+                title: "The Boy Who Faced the World's Fastest Bowlers: How Sachin Tendulkar Became a Legend",
+                url: 'https://www.linkedin.com/posts/sachin-tendulkar-legend',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Article',
+                year: 2025,
+                access: 'Free to Read',
+                topic: 'Sports & Culture',
+                keywords: ['Sachin Tendulkar', 'Cricket', 'Leadership', 'Dedication', 'Bharat Ratna', 'Inspiration'],
+                volume: '26',
+                issue: '2',
+                citation: '"The Boy Who Faced the World\'s Fastest Bowlers." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: 'At a very young age, a boy from Mumbai picked up a cricket bat and began a journey that would inspire millions. With dedication, discipline, and an unmatched love for the game, he rose to become a legend.',
+                status: 'published',
+                createdAt: '2025-01-06T10:00:00Z'
+            },
+            {
+                id: 'claude-cowork-certificate',
+                featured: false,
+                title: "Free Certificate: Master Claude's Cowork Feature for Real-World Task Management",
+                url: 'https://www.linkedin.com/posts/claude-cowork-certificate',
+                source: 'LinkedIn',
+                sourceDetails: 'UpSkill Newsletter, Vol. 26, No. 2',
+                curatedBy: 'Sage Spark Team',
+                type: 'Teaching Note',
+                year: 2025,
+                access: 'External Link',
+                topic: 'Technology & AI',
+                keywords: ['Claude AI', 'Cowork Feature', 'Free Certificate', 'Task Management', 'Productivity', 'AI Tools'],
+                volume: '26',
+                issue: '2',
+                citation: '"Free Certificate: Claude Cowork Feature." UpSkill Newsletter, Vol. 26, No. 2, 2025. Sourced via LinkedIn.',
+                abstract: 'A practical course that teaches you how to use Claude\'s Cowork feature to plan, execute, and manage real tasks. Learn to automate workflows and integrate AI tools into daily productivity.',
+                status: 'published',
+                createdAt: '2025-01-07T10:00:00Z'
+            }
+        ];
+
+        // --- APP STATE ---
+        let state = {
+            articles: [],
+            bookmarks: [],
+            filters: {
+                types: [],
+                topics: [],
+                keywords: [],
+                sources: [],
+                years: [2020, 2025],
+                access: []
+            },
+            searchQuery: '',
+            scope: 'featured',
+            sort: 'newest',
+            viewMode: 'list',
+            currentPage: 1,
+            itemsPerPage: 10
+        };
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Load from LocalStorage
+            const storedArticles = localStorage.getItem('sageSparkArticles');
+            if (storedArticles) {
+                state.articles = JSON.parse(storedArticles);
+            } else {
+                state.articles = seedArticles;
+                localStorage.setItem('sageSparkArticles', JSON.stringify(seedArticles));
+            }
+
+            state.bookmarks = JSON.parse(localStorage.getItem('sageSparkBookmarks')) || [];
+
+            renderFilters();
+            applyFiltersAndRender();
+            setupEventListeners();
+        }
+
+        // --- CORE LOGIC ---
+        function applyFiltersAndRender() {
+            let filtered = state.articles.filter(a => a.status === 'published');
+
+            // Scope
+            if (state.scope === 'featured') {
+                filtered = filtered.filter(a => a.featured);
+            }
+
+            // Search
+            if (state.searchQuery) {
+                const q = state.searchQuery.toLowerCase();
+                filtered = filtered.filter(a => 
+                    a.title.toLowerCase().includes(q) || 
+                    a.abstract.toLowerCase().includes(q) ||
+                    a.keywords.some(k => k.toLowerCase().includes(q))
+                );
+            }
+
+            // Checkbox Filters
+            if (state.filters.types.length > 0) filtered = filtered.filter(a => state.filters.types.includes(a.type));
+            if (state.filters.topics.length > 0) filtered = filtered.filter(a => state.filters.topics.includes(a.topic));
+            if (state.filters.sources.length > 0) filtered = filtered.filter(a => state.filters.sources.includes(a.source));
+            if (state.filters.access.length > 0) filtered = filtered.filter(a => state.filters.access.includes(a.access));
+            if (state.filters.keywords.length > 0) {
+                filtered = filtered.filter(a => a.keywords.some(k => state.filters.keywords.includes(k)));
+            }
+
+            // Years
+            filtered = filtered.filter(a => a.year >= state.filters.years[0] && a.year <= state.filters.years[1]);
+
+            // Sort
+            if (state.sort === 'newest') filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            if (state.sort === 'oldest') filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            if (state.sort === 'az') filtered.sort((a, b) => a.title.localeCompare(b.title));
+
+            renderResults(filtered);
+            updateResultCount(filtered.length);
+            renderChips();
+        }
+
+        // --- RENDERING ---
+        function renderResults(data) {
+            const container = document.getElementById('resultsArea');
+            container.className = state.viewMode === 'grid' ? 'results-grid grid-mode' : 'results-grid';
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 50px; opacity: 0.5;">No articles found matching your criteria.</div>`;
+                return;
+            }
+
+            data.forEach(article => {
+                const isBookmarked = state.bookmarks.includes(article.id);
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="meta-row">
+                        <div>
+                            <span class="ui-font" style="margin-right: 15px; color: var(--gray-med)">${new Date(article.createdAt).toLocaleDateString()}</span>
+                            <span class="badge" style="background: var(--b-${article.type.split(' ')[0].toLowerCase()})">${article.type}</span>
+                            <span class="badge" style="background: var(--b-${article.access.split(' ')[0].toLowerCase()})">${article.access}</span>
+                        </div>
+                        <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" onclick="toggleBookmark('${article.id}')">❤</button>
+                    </div>
+                    <h2 class="card-title" onclick="openModal('${article.id}')">${article.title}</h2>
+                    <div class="source-line">${article.source} | Curated by: ${article.curatedBy}</div>
+                    
+                    ${state.viewMode === 'list' ? `
+                        <p class="abstract" id="abs-${article.id}">${article.abstract}</p>
+                        <button class="read-more-btn" onclick="toggleAbstract('${article.id}')">Read more</button>
+                    ` : ''}
+
+                    <div style="margin-top: 15px;">
+                        ${article.keywords.map(k => `<span class="keyword-pill" onclick="toggleFilter('keywords', '${k}')">${k}</span>`).join('')}
+                    </div>
+
+                    ${state.viewMode === 'list' ? `<div class="citation-box">${article.citation}</div>` : ''}
+
+                    <div class="action-row">
+                        <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="abtn abtn-primary">View Article →</a>
+                        ${state.viewMode === 'list' ? `
+                            <button class="abtn abtn-secondary" onclick="copyCitation('${article.id}')">Cite This</button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderFilters() {
+            const sidebar = document.getElementById('filtersContainer');
+            // Simplified for prototype, but would be dynamic
+            const sections = [
+                { name: 'Content Type', key: 'types', options: ['Article', 'Working Paper', 'Case Study', 'Teaching Note'] },
+                { name: 'Topic', key: 'topics', options: ['Technology & AI', 'Personal Development', 'Health & Medicine', 'Business Strategy', 'Sports & Culture'] },
+                { name: 'Access', key: 'access', options: ['Free to Read', 'Register to Read', 'External Link'] }
+            ];
+
+            sidebar.innerHTML = sections.map(sec => `
+                <div class="filter-group">
+                    <div class="filter-header"><b>${sec.name}</b> <span>▾</span></div>
+                    <div class="filter-content">
+                        ${sec.options.map(opt => `
+                            <label class="filter-item">
+                                <input type="checkbox" onchange="toggleFilter('${sec.key}', '${opt}')" ${state.filters[sec.key].includes(opt) ? 'checked' : ''}>
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('') + `<button class="abtn abtn-secondary" style="width:100%" onclick="clearFilters()">Clear All Filters</button>`;
+        }
+
+        // --- INTERACTIONS ---
+        window.toggleBookmark = (id) => {
+            if (state.bookmarks.includes(id)) {
+                state.bookmarks = state.bookmarks.filter(b => b !== id);
+            } else {
+                state.bookmarks.push(id);
+            }
+            localStorage.setItem('sageSparkBookmarks', JSON.stringify(state.bookmarks));
+            applyFiltersAndRender();
+        };
+
+        window.toggleFilter = (key, val) => {
+            if (state.filters[key].includes(val)) {
+                state.filters[key] = state.filters[key].filter(v => v !== val);
+            } else {
+                state.filters[key].push(val);
+            }
+            applyFiltersAndRender();
+            renderFilters();
+        };
+
+        window.clearFilters = () => {
+            state.filters = { types: [], topics: [], keywords: [], sources: [], years: [2020, 2025], access: [] };
+            state.searchQuery = '';
+            document.getElementById('mainSearch').value = '';
+            document.getElementById('headerSearch').value = '';
+            applyFiltersAndRender();
+            renderFilters();
+        };
+
+        window.openModal = (id) => {
+            const article = state.articles.find(a => a.id === id);
+            document.getElementById('modalTitle').innerText = article.title;
+            document.getElementById('modalAbstract').innerText = article.abstract;
+            document.getElementById('modalCitation').innerText = article.citation;
+            document.getElementById('modalMeta').innerText = `${article.type} | ${article.access}`;
+            document.getElementById('modalSub').innerText = `${article.source} (${article.year})`;
+            
+            document.getElementById('modalActions').innerHTML = `
+                <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="abtn abtn-primary">View Article →</a>
+                <button class="abtn abtn-secondary" onclick="copyCitation('${article.id}')">Copy Citation</button>
+            `;
+
+            document.getElementById('detailModal').classList.add('active');
+        };
+
+        function setupEventListeners() {
+            document.getElementById('mainSearch').addEventListener('input', (e) => {
+                state.searchQuery = e.target.value;
+                document.getElementById('headerSearch').value = e.target.value;
+                applyFiltersAndRender();
+            });
+
+            document.querySelectorAll('.tab-btn[data-scope]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.tab-btn[data-scope]').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.scope = e.target.dataset.scope;
+                    applyFiltersAndRender();
+                });
+            });
+
+            document.getElementById('listViewBtn').addEventListener('click', () => {
+                state.viewMode = 'list';
+                document.getElementById('gridViewBtn').classList.remove('active');
+                document.getElementById('listViewBtn').classList.add('active');
+                applyFiltersAndRender();
+            });
+
+            document.getElementById('gridViewBtn').addEventListener('click', () => {
+                state.viewMode = 'grid';
+                document.getElementById('listViewBtn').classList.remove('active');
+                document.getElementById('gridViewBtn').classList.add('active');
+                applyFiltersAndRender();
+            });
+
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('detailModal').classList.remove('active');
+            });
+        }
+
+        function updateResultCount(count) {
+            document.getElementById('resultCount').innerHTML = `Filter Results: <b>${count}</b>`;
+        }
+
+        function renderChips() {
+            const container = document.getElementById('activeChips');
+            container.innerHTML = '';
+            Object.keys(state.filters).forEach(key => {
+                if (Array.isArray(state.filters[key]) && key !== 'years') {
+                    state.filters[key].forEach(val => {
+                        const chip = document.createElement('div');
+                        chip.className = 'chip';
+                        chip.innerHTML = `${val} <span>&times;</span>`;
+                        chip.onclick = () => toggleFilter(key, val);
+                        container.appendChild(chip);
+                    });
+                }
+            });
+        }
+
+        window.copyCitation = (id) => {
+            const article = state.articles.find(a => a.id === id);
+            navigator.clipboard.writeText(article.citation);
+            alert('Citation copied to clipboard!');
+        };
+
+        window.toggleAbstract = (id) => {
+            const el = document.getElementById(`abs-${id}`);
+            el.classList.toggle('expanded');
+        };
+
+        // Start App
+        init();
+
+    </script>
+</body>
+</html>
